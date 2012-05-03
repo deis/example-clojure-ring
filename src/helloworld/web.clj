@@ -1,10 +1,19 @@
-(ns helloworld.web
-    (:use ring.adapter.jetty))
+(ns helloworld.web 
+    (:use compojure.core [ring.adapter.jetty :only [run-jetty]] )
+    (:require [compojure.route :as route]
+              [compojure.handler :as handler]))
 
-(defn handler [request]
-  {:status 200
-     :headers {"Content-Type" "text/html"}
-        :body "Powered by OpDemand"})
 
+(defroutes main-routes
+  ; what's going on
+
+    (GET "/" [] (str "Hello from OpDemand" ) )
+    (route/resources "/")
+    (route/not-found "Page not found")   )
+
+
+(def app
+    (handler/api main-routes))
        
-
+(defn -main [port]
+    (run-jetty app {:port (Integer. port)}))
