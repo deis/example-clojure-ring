@@ -31,7 +31,7 @@ To use a Clojure application with OpDemand, you will need to conform to 3 basic 
  * Use **Foreman** to manage processes
  * Use **Environment Variables** to manage configuration
 
-If you're deploying the example application, it already conforms to these requirements.  If you're in a rush, skip to [Create a Platform](#create-a-platform-).
+If you're deploying the example application, it already conforms to these requirements.  If you're in a rush, skip to [Create a Platform](#create).
 
 ### Use Leinengen to manage dependencies
 
@@ -85,8 +85,8 @@ The same is true for external services like databases, caches and queues.  Here 
                    :host (get (System/getenv) "DATABASE_HOST" "localhost")
                    :port (get (System/getenv) "DATABASE_PORT" 27017)))
 
-Create a new Platform
----------------------
+<h2 id="create">Create a new Platform</h2>
+
 Use the `opdemand list` command to list the available infrastructure templates:
 
 	$ opdemand list | grep clojure
