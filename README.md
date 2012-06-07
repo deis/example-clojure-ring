@@ -27,13 +27,13 @@ Prepare your Application
 ------------------------
 To use a Clojure application with OpDemand, you will need to conform to 3 basic requirements:
 
- * Use **Leinengen** to manage dependencies
+ * Use **Leiningen** to manage dependencies
  * Use **Foreman** to manage processes
  * Use **Environment Variables** to manage configuration
 
 If you're deploying the example application, it already conforms to these requirements.  If you're in a rush, skip to [Create a Platform](#create).
 
-### Use Leinengen to manage dependencies
+### Use Leiningen to manage dependencies
 
 On every deploy action, OpDemand will run `lein deps` on all application workers to ensure dependencies are up to date.  Dependencies are specified in a `project.clj` file in the root of your repository.  Here is an example `project.clj`:
 
