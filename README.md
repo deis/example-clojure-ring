@@ -27,13 +27,13 @@ Prepare your Application
 ------------------------
 To use a Clojure application with OpDemand, you will need to conform to 3 basic requirements:
 
- * Use **Leiningen** to manage dependencies
+ * Use **Leinengen** to manage dependencies
  * Use **Foreman** to manage processes
  * Use **Environment Variables** to manage configuration
 
-If you're deploying the example application, it already conforms to these requirements.  If you're in a rush, skip to [Create a Platform](#create).
+If you're deploying the example application, it already conforms to these requirements.  If you're in a rush, skip to [Create a new Service](#create-a-new-service).
 
-### Use Leiningen to manage dependencies
+### Use Leinengen to manage dependencies
 
 On every deploy action, OpDemand will run `lein deps` on all application workers to ensure dependencies are up to date.  Dependencies are specified in a `project.clj` file in the root of your repository.  Here is an example `project.clj`:
 
@@ -74,19 +74,20 @@ This tells OpDemand to run one web process using `lein trampoline` and make it l
 OpDemand uses environment variables to manage your application's configuration.  For example, the application listener must use the value of the `APPLICATION_PORT` environment variable.  The following code snippets demonstrates how this can work inside your application:
 
 	(get (System/getenv) "APPLICATION_PORT" 8080)  ; fallback to 8080
-	
+
 The same is true for external services like databases, caches and queues.  Here is an example in that shows how to connect to a MongoDB database using the `DATABASE_HOST` and `DATABASE_PORT` environment variables:
 
 	(ns my-mongo-app
 	  (:use somnium.congomongo))
-	
+
     (def conn
       (make-connection "mydb"
                    :host (get (System/getenv) "DATABASE_HOST" "localhost")
                    :port (get (System/getenv) "DATABASE_PORT" 27017)))
 
-<h2 id="create">Create a new Platform</h2>
-
+<a id="create-a-new-service"></a>
+Create a new Service
+--------------------
 Use the `opdemand list` command to list the available infrastructure templates:
 
 	$ opdemand list | grep clojure
@@ -95,13 +96,13 @@ Use the `opdemand list` command to list the available infrastructure templates:
     app/clojure/4node: Clojure Application (4-node with ELB)
     app/clojure/Nnode: Clojure Application (Auto Scaling)
 
-Use the `opdemand create` command to create a new platform based on one of the templates listed.  To create an `app/clojure/1node` platform with `app` as its handle/nickname.
+Use the `opdemand create` command to create a new service based on one of the templates listed.  To create an `app/clojure/1node` service with `app` as its handle/nickname.
 
 	$ opdemand create app --template=app/clojure/1node
 
-Configure the Platform
+Configure the Service
 ----------------------
-To quickly configure a platform from the command-line use `opdemand config [handle] --repository=detect`.  This will attempt to detect and install repository configuration including:
+To quickly configure a service from the command-line use `opdemand config [handle] --repository=detect`.  This will attempt to detect and install repository configuration including:
 
 * Detecting your GitHub repository URL, project and username
 * Generating and installing a secure SSH Deploy Key
@@ -113,25 +114,25 @@ More detailed configuration can be done using:
 
 Detailed configuration changes are best done via the web console, which exposes additional helpers, drop-downs and overrides.
 
-Start the Platform
+Start the Service
 ------------------
-To start your platform use the `opdemand start` command:
+To start your service use the `opdemand start` command:
 
 	$ opdemand start app
-	
-You will see real-time streaming log output as OpDemand orchestrates the platform's infrastructure and triggers the necessary SSH deployments.  Once the platform has finished starting you can access its services using an `opdemand show`.
+
+You will see real-time streaming log output as OpDemand orchestrates the service's infrastructure and triggers the necessary SSH deployments.  Once the service has finished starting you can access its services using an `opdemand show`.
 
     $ opdemand show app
 
 	Application URL (URL used to access this application)
 	http://ec2-23-20-231-188.compute-1.amazonaws.com
 
-Open the URL and you should see "Powered by OpDemand" in your browser.  To check on the status of your platforms, use the `opdemand status` command:
+Open the URL and you should see "Powered by OpDemand" in your browser.  To check on the status of your services, use the `opdemand status` command:
 
 	$ opdemand status
 	app: Clojure Application (1-node) (status: running)
 
-Deploy the Platform
+Deploy the Service
 ----------------------
 As you make changes to your application code, push those to GitHub as you would normally.  When you're ready to deploy those changes, use the `opdemand deploy` command:
 
@@ -143,4 +144,3 @@ This will trigger an OpDemand deploy action which will -- among other things -- 
 Additional Resources
 ====================
 * <http://www.opdemand.com>
-
