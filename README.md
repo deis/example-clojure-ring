@@ -18,7 +18,7 @@ The simplest way to get started is by forking OpDemand's sample application loca
 
 After forking the project, clone it to your local workstation using the SSH-style URL:
 
-    $ git clone git@github.com:gabrtv/example-clojure-ring.git example-clojure-ring
+    $ git clone git@github.com:mygithubuser/example-clojure-ring.git example-clojure-ring
     $ cd example-clojure-ring
 
 If you want to use an existing application, no problem -- just make sure you've cloned it from GitHub.
@@ -27,13 +27,13 @@ Prepare your Application
 ------------------------
 To use a Clojure application with OpDemand, you will need to conform to 3 basic requirements:
 
- * Use **Leinengen** to manage dependencies
- * Use **Foreman** to manage processes
+ * Use [**leiningen**](https://github.com/technomancy/leiningen) to manage dependencies
+ * Use [**foreman**](http://ddollar.github.com/foreman/) to manage processes
  * Use **Environment Variables** to manage configuration
 
 If you're deploying the example application, it already conforms to these requirements.  If you're in a rush, skip to [Create a new Service](#create-a-new-service).
 
-### Use Leinengen to manage dependencies
+### Use Leiningen to manage dependencies
 
 On every deploy action, OpDemand will run `lein deps` on all application workers to ensure dependencies are up to date.  Dependencies are specified in a `project.clj` file in the root of your repository.  Here is an example `project.clj`:
 
