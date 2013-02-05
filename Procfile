@@ -1,1 +1,1 @@
-web: lein trampoline run -m helloworld.web $APPLICATION_PORT
+web: lein trampoline run -m helloworld.web $PORT
