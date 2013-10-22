@@ -7,7 +7,7 @@
 (defroutes main-routes
   ; what's going on
 
-    (GET "/" [] (apply str "Powered by " (System/getenv "POWERED_BY", "Deis")) )
+    (GET "/" [] (str "Powered by OpDemand" ) )
     (route/resources "/")
     (route/not-found "Page not found")   )
 
