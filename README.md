@@ -1,11 +1,13 @@
 # Clojure Quick Start Guide
 
-This guide will walk you through deploying a Clojure application to Amazon EC2 using OpDemand.
+This guide will walk you through deploying a Clojure application on Deis.
 
 ## Prerequisites
 
-* An [OpDemand account](http://www.opdemand.com/) that is [linked to your GitHub account](http://www.opdemand.com/docs/about-github-integration/)
-* An [OpDemand environment](http://www.opdemand.com/how-it-works/) that contains valid [AWS credentials](http://www.opdemand.com/docs/adding-aws-creds/)
+* A [User Account](http://docs.deis.io/en/latest/client/register/) on a [Deis Controller](http://docs.deis.io/en/latest/terms/controller/).
+* A [Deis Formation](http://docs.deis.io/en/latest/gettingstarted/concepts/#formations) that is ready to host applications
+
+If you do not yet have a controller or a Deis formation, please review the [Deis installation](http://docs.deis.io/en/latest/gettingstarted/installation/) instructions.
 
 ## Setup your workstation
 
@@ -15,10 +17,10 @@ This guide will walk you through deploying a Clojure application to Amazon EC2 u
 
 ## Clone your Application
 
-If you want to use an existing application, no problem.  You can also fork OpDemand's sample application located at <https://github.com/opdemand/example-java-jetty>.  After forking the project, clone it to your local workstation using the SSH-style URL:
+If you want to use an existing application, no problem.  You can also use the Deis sample application located at <https://github.com/bengrunfeld/example-clojure-ring>.  Clone the example application to your local workstation:
 
-	$ git clone git@github.com:mygithubuser/example-clojure-ring.git
-    $ cd example-clojure-ring
+	$ git clone https://github.com/bengrunfeld/example-clojure-ring.git
+	$ cd example-clojure-ring
 
 ## Prepare your Application
 
@@ -32,7 +34,7 @@ If you're deploying the example application, it already conforms to these requir
 
 #### 1. Use Leiningen to manage dependencies
 
-Every time you deploy, OpDemand will run a `lein deps` on all application instances to ensure dependencies are up to date, and code is compiled and packaged.  Leiningen requires that you explicitly declare your dependencies using a [project.clj](https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md#projectclj) file.  Here is a very [basic example](https://github.com/opdemand/example-clojure-ring/blob/master/project.clj).
+Every time you deploy, Deis will run a `lein deps` on all application instances to ensure dependencies are up to date, and code is compiled and packaged.  Leiningen requires that you explicitly declare your dependencies using a [project.clj](https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md#projectclj) file.  Here is a very [basic example](https://github.com/bengrunfeld/example-clojure-ring/blob/master/project.clj).
     
 You can then use `lein deps` to install dependencies, compile and package your application on your local workstation:
 
@@ -46,112 +48,120 @@ If your dependencies require any system packages, you can install those later by
 
 #### 2. Use Foreman to manage processes
 
-OpDemand uses [Foreman](http://ddollar.github.com/foreman/) to manage the processes that serve up your application.  Foreman relies on a `Procfile` that lives in the root of your repository.  This is where you define the command(s) used to run your application.  Here is an example `Procfile`:
+Deis relies on a [Foreman](http://ddollar.github.com/foreman/) `Procfile` that lives in the root of your repository.  This is where you define the command(s) used to run your application.  Here is an example `Procfile`:
 
     web: lein trampoline run -m helloworld.web $PORT
 
-This tells OpDemand to run web application workers using `lein trampoline run`.  You can test this locally by running `foreman start`.
+This tells Deis to run `web` workers using the command `lein trampoline run`. You can test this locally by running `foreman start`.
 
-    $ foreman start
-    15:45:44 web.1  | started with pid 91982
-    15:45:47 web.1  | 2013-04-06 15:45:47.080:INFO::Logging to STDERR via org.mortbay.log.StdErrLog
-    15:45:47 web.1  | 2013-04-06 15:45:47.081:INFO::jetty-6.1.25
-    15:45:47 web.1  | 2013-04-06 15:45:47.097:INFO::Started SocketConnector@0.0.0.0:5000
+	$ foreman start
+	12:31:55 web.1  | started with pid 36247
+	12:31:59 web.1  | 2013-10-25 12:31:59.533:INFO::Logging to STDERR via org.mortbay.log.StdErrLog
+	12:31:59 web.1  | 2013-10-25 12:31:59.535:INFO::jetty-6.1.25
+	12:31:59 web.1  | 2013-10-25 12:31:59.671:INFO::Started SocketConnector@0.0.0.0:5000
 
 You should now be able to access your application locally at <http://localhost:5000>.
 
 #### 3. Use Environment Variables to manage configuration
 
-OpDemand uses environment variables to manage your application's configuration.  For example, your application listener must use the value of the `PORT` environment variable.  The following code snippet demonstrates how this can work inside your application:
+Deis uses environment variables to manage your application's configuration. For example, your application listener must use the value of the `PORT` environment variable. The following code snippet demonstrates how this can work inside your application:
 
 	(get (System/getenv) "PORT" 5000)  ; fallback to 5000
 
-The same is true for external services like databases, caches and queues.  Here is an example in that shows how to make a connection to a MongoDB database using environment variables:
 
-	(ns my-mongo-app
-	  (:use somnium.congomongo))
+## Create a new Application
 
-    (def conn
-      (make-connection "mydb"
-                   :host (get (System/getenv) "MONGODB_HOST" "localhost")
-                   :port (get (System/getenv) "MONGODB_PORT" 27017)))
+Per the prerequisites, we assume you have access to an existing Deis formation. If not, please review the Deis [installation instuctions](http://docs.deis.io/en/latest/gettingstarted/installation/).
 
-## Add a Clojure Stack to your Environment
+Use the following command to create an application on an existing Deis formation.
 
-We now have an application that is ready for deployment, along with an [OpDemand environment](http://www.opdemand.com/how-it-works/) that includes [AWS credentials](http://www.opdemand.com/docs/adding-aws-creds/).  Let's add a basic Clojure stack to host our example application:
+	$ deis create --formation=<formationName> --id=<appName>
+	Creating application... done, created pythonApp
+	Git remote deis added
+	
+If an ID is not provided, one will be auto-generated for you.
 
-* Click the **Add/Discover Services** button
-* Select the **Clojure** stack and press **Save**
+## Deploy your Application
 
-A typical application stack includes:
+Use `git push` to deploy your application.
 
-* An **EC2 Load Balancer** used to route traffic to your EC2 instances
-* An **EC2 Instance** used to host the application behind [Nginx](http://wiki.nginx.org/Main)
-* An **EC2 Security Group** used as a virtual firewall inside EC2
-* An **EC2 Key Pair** used for deployment automation
+	$ git push deis master
+			Clojure app detected
+	-----> Installing OpenJDK 1.6...done
+	Warning: no :min-lein-version found in project.clj; using 1.7.1.
+	-----> Using cached Leiningen 1.7.1
+	       To use Leiningen 2.x, add this to project.clj: :min-lein-version "2.0.0"
+	       Downloading: rlwrap-0.3.7
+	       Writing: lein script
 
-## Deploy the Environment
 
-To deploy this application stack, press the green deploy button on the environment toolbar.
+Once your application has been deployed, use `deis open` to view it in a browser. To find out more info about your application, use `deis info`.
 
-![Deploy your environment](http://www.opdemand.com/wp-content/uploads/2013/03/Screen-Shot-2013-03-27-at-1.04.35-PM.png)
+## Scale your Application
 
-### Specify Required Configuration
+To scale your application's [Docker](http://docker.io) containers, use `deis scale`.
 
-OpDemand provides reasonable defaults, but you'll want to review a few configuration values:
+	$ deis scale web=8
+	Scaling containers... but first, coffee!
+	done in 19s
+	
+	=== unbent-occupant Containers
+	
+	--- web: `lein trampoline run -m helloworld.web $PORT`
+	web.1 up 2013-10-25T18:44:58.731Z (clojureFormation-runtime-1)
+	web.2 up 2013-10-25T18:48:27.867Z (clojureFormation-runtime-1)
+	web.3 up 2013-10-25T18:48:27.883Z (clojureFormation-runtime-1)
+	web.4 up 2013-10-25T18:48:27.896Z (clojureFormation-runtime-1)
+	web.5 up 2013-10-25T18:48:27.912Z (clojureFormation-runtime-1)
+	web.6 up 2013-10-25T18:48:27.928Z (clojureFormation-runtime-1)
+	web.7 up 2013-10-25T18:48:27.945Z (clojureFormation-runtime-1)
+	web.8 up 2013-10-25T18:48:27.963Z (clojureFormation-runtime-1)
 
-* Check the default *Regions*, *Zones* and *Instance Types*
-* Add your public key to *SSH Authorized Keys* so you can SSH into Instances
-* Make sure the *Repository URL* and *Repository Revision* are correct for your application
-* If your app is in a private GitHub repository, click **Create Deploy Key** to have OpDemand install a secure deploy key using the GitHub API
 
-Once you've reviewed and modified the required configuration, press **Save & Continue** to initiate your first deploy.
+## Configure your Application
 
-### Wait until Active
+Deis applications are configured using environment variables. The example application includes a special `POWERED_BY` variable to help demonstrate how you would provide application-level configuration. 
 
-OpDemand will now orchestrate the deployment of your application stack to your cloud providers.  Once the environment has an **Active** status, your application should be good to go.
+	$ curl -s http://yourapp.com
+	Powered by Deis
+	$ deis config:set POWERED_BY=Clojure
+	=== unbent-occupant
+	POWERED_BY: Clojure
+	$ curl -s http://yourapp.com
+	Powered by Clojure
 
-This can take a while depending on the cloud provider, service types, instance sizes and the build/deploy scripts (are you compiling something?).  While you wait, grab some coffee and:
+This method is also how you connect your application to backing services like databases, queues and caches.
 
-* Watch the Key Pairs and Security Groups build, deploy and become **Active**
-* Watch the Instances build, deploy and become **Active** (this takes a few minutes, check out the real-time log feedback)
-* Watch the Load Balancers build, deploy and become **Active**
+To experiment in your application environment, use `deis run` to execute one-off commands against your application.
 
-### Troubleshooting
+	$ deis run ls -la
+	drwxr-xr-x  9 root root 4096 Oct 25 18:47 .
+	drwxr-xr-x 57 root root 4096 Oct 25 18:53 ..
+	-rw-r--r--  1 root root   59 Oct 25 18:46 .gitignore
+	drwxr-xr-x  6 root root 4096 Oct 25 18:46 .jdk
+	drwxr-xr-x  3 root root 4096 Oct 25 18:46 .lein
+	-rw-r--r--  1 root root   40 Oct 25 18:46 .lein-deps-sum
+	drwxr-xr-x  2 root root 4096 Oct 25 18:46 .profile.d
+	-rw-r--r--  1 root root  154 Oct 25 18:46 .release
+	-rw-r--r--  1 root root  553 Oct 25 18:46 LICENSE
+	-rw-r--r--  1 root root   49 Oct 25 18:46 Procfile
+	-rw-r--r--  1 root root 8985 Oct 25 18:46 README.md
+	drwxr-xr-x  2 root root 4096 Oct 25 18:47 classes
+	drwxr-xr-x  2 root root 4096 Oct 25 18:46 lib
+	-rw-r--r--  1 root root  414 Oct 25 18:46 project.clj
+	drwxr-xr-x  3 root root 4096 Oct 25 18:46 src
+	drwxr-xr-x  3 root root 4096 Oct 25 18:46 test
 
-It's not uncommon to experience errors or warnings during deploys.  If you get stuck on an error you can click **Report This** to [open a ticket](https://desk.opdemand.com/) with the OpDemand help desk.
+## Troubleshoot your Application
 
-* For *Cloud Provider Errors*, check the service's primary configuration fields
-* For *SSH Key Warnings*, make sure Deployment configuration sections contain valid SSH private keys
-* For *SSH Return Code Warnings*, SSH into the instance and make sure the Build & Deploy scripts execute successfully
-* For *Other Warnings*, try re-deploying to bring the service back to active status
+To view your application's log output, including any errors or stack traces, use `deis logs`.
 
-###### SSH Access
-
-Click the **SSH** button on the toolbar to SSH into Instances.  If you didn't add your SSH key initially, you can always modify SSH keys later, save the new configuration and **Deploy** again to update the Instance.
-
-![SSH into your Instance](http://www.opdemand.com/wp-content/uploads/2013/03/Screen-Shot-2013-03-27-at-1.10.19-PM.png)
-
-## Access your Application
-
-Once your application is active, you can access its [published URLs](http://www.opdemand.com/how-it-works/monitor/) on the Environment's **Monitor** tab.  If you're looking at a service that publishes something, you can jump to the published URL in the upper-right corner of the service:
-
-![Access your application](http://www.opdemand.com/wp-content/uploads/2013/03/Screen-Shot-2013-03-27-at-2.43.09-PM.png)
-
-For the example application you should see: *Powered by OpDemand*
-
-## Update your Application
-
-As you make changes to your application or deployment code:
-
-1. **Push** the code to GitHub
-2. **Deploy** the environment
-
-OpDemand will use the latest environment configuration to update cloud services, SSH into instances, pull down source code from GitHub, install dependencies, re-package your application and restart services where necessary.
-
-If you want to integrate OpDemand into your command-line workflow, `opdemand deploy` can also be used to trigger deploys.  See [Using the OpDemand Command-Line Interface](http://www.opdemand.com/docs/) more details.
+	$ deis logs
+	<show output>
 
 ## Additional Resources
 
-* [OpDemand Documentation](http://www.opdemand.com/docs/)
-* [OpDemand - How It Works](https://www.opdemand.com/how-it-works/)
+* [Get Deis](http://deis.io/get-deis/)
+* [GitHub Project](https://github.com/opdemand/deis)
+* [Documentation](http://docs.deis.io/)
+* [Blog](http://deis.io/blog/)
