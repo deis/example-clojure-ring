@@ -34,9 +34,7 @@ If you're deploying the example application, it already conforms to these requir
 
 #### 1. Use Leiningen to manage dependencies
 
-Every time you deploy, Deis will run a `lein deps` on all application instances to ensure dependencies are up to date, and code is compiled and packaged.  Leiningen requires that you explicitly declare your dependencies using a [project.clj](https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md#projectclj) file.  Here is a very [basic example](https://github.com/bengrunfeld/example-clojure-ring/blob/master/project.clj).
-    
-You can then use `lein deps` to install dependencies, compile and package your application on your local workstation:
+Leiningen requires that you explicitly declare your dependencies using a [project.clj](https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md#projectclj) file.  Here is a very [basic example](https://github.com/bengrunfeld/example-clojure-ring/blob/master/project.clj). You can then use `lein deps` to install dependencies, compile and package your application on your local workstation:
 
     $ lein deps
     Retrieving org/clojure/clojure/1.2.1/clojure-1.2.1.pom from central
@@ -44,7 +42,6 @@ You can then use `lein deps` to install dependencies, compile and package your a
     ...
     Retrieving ring/ring-core/1.0.0/ring-core-1.0.0.jar from clojars
 
-If your dependencies require any system packages, you can install those later by specifying a list of custom packages in the Instance configuration or by customizing the deploy script to install your own packages.
 
 #### 2. Use Foreman to manage processes
 
@@ -76,7 +73,7 @@ Per the prerequisites, we assume you have access to an existing Deis formation. 
 Use the following command to create an application on an existing Deis formation.
 
 	$ deis create --formation=<formationName> --id=<appName>
-	Creating application... done, created pythonApp
+	Creating application... done, created <appName>
 	Git remote deis added
 	
 If an ID is not provided, one will be auto-generated for you.
@@ -85,15 +82,13 @@ If an ID is not provided, one will be auto-generated for you.
 
 Use `git push` to deploy your application.
 
-	$ git push deis master
-			Clojure app detected
-	-----> Installing OpenJDK 1.6...done
-	Warning: no :min-lein-version found in project.clj; using 1.7.1.
-	-----> Using cached Leiningen 1.7.1
-	       To use Leiningen 2.x, add this to project.clj: :min-lein-version "2.0.0"
-	       Downloading: rlwrap-0.3.7
-	       Writing: lein script
-
+    $ git push deis master
+          Clojure app detected
+    -----> Installing OpenJDK 1.6...done
+    -----> Using cached Leiningen 1.7.1
+          To use Leiningen 2.x, add this to project.clj: :min-lein-version "2.0.0"
+          Downloading: rlwrap-0.3.7
+          Writing: lein script
 
 Once your application has been deployed, use `deis open` to view it in a browser. To find out more info about your application, use `deis info`.
 
