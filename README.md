@@ -17,9 +17,9 @@ If you do not yet have a controller or a Deis formation, please review the [Deis
 
 ## Clone your Application
 
-If you want to use an existing application, no problem.  You can also use the Deis sample application located at <https://github.com/bengrunfeld/example-clojure-ring>.  Clone the example application to your local workstation:
+If you want to use an existing application, no problem.  You can also use the Deis sample application located at <https://github.com/opdemand/example-clojure-ring>.  Clone the example application to your local workstation:
 
-	$ git clone https://github.com/bengrunfeld/example-clojure-ring.git
+	$ git clone https://github.com/opdemand/example-clojure-ring.git
 	$ cd example-clojure-ring
 
 ## Prepare your Application
@@ -34,7 +34,7 @@ If you're deploying the example application, it already conforms to these requir
 
 #### 1. Use Leiningen to manage dependencies
 
-Leiningen requires that you explicitly declare your dependencies using a [project.clj](https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md#projectclj) file.  Here is a very [basic example](https://github.com/bengrunfeld/example-clojure-ring/blob/master/project.clj). You can then use `lein deps` to install dependencies, compile and package your application on your local workstation:
+Leiningen requires that you explicitly declare your dependencies using a [project.clj](https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md#projectclj) file.  Here is a very [basic example](https://github.com/opdemand/example-clojure-ring/blob/master/project.clj). You can then use `lein deps` to install dependencies, compile and package your application on your local workstation:
 
     $ lein deps
     Retrieving org/clojure/clojure/1.2.1/clojure-1.2.1.pom from central
@@ -80,7 +80,7 @@ If an ID is not provided, one will be auto-generated for you.
 
 ## Deploy your Application
 
-Use `git push` to deploy your application.
+Use `git push deis master` to deploy your application.
 
     $ git push deis master
           Clojure app detected
@@ -94,13 +94,13 @@ Once your application has been deployed, use `deis open` to view it in a browser
 
 ## Scale your Application
 
-To scale your application's [Docker](http://docker.io) containers, use `deis scale`.
+To scale your application's [Docker](http://docker.io) containers, use `deis scale` and specify the number of containers for each process type defined in your application's `Procfile`. For example, `deis scale web=8`.
 
 	$ deis scale web=8
 	Scaling containers... but first, coffee!
 	done in 19s
 	
-	=== unbent-occupant Containers
+	=== <appName> Containers
 	
 	--- web: `lein trampoline run -m helloworld.web $PORT`
 	web.1 up 2013-10-25T18:44:58.731Z (clojureFormation-runtime-1)
@@ -117,17 +117,15 @@ To scale your application's [Docker](http://docker.io) containers, use `deis sca
 
 Deis applications are configured using environment variables. The example application includes a special `POWERED_BY` variable to help demonstrate how you would provide application-level configuration. 
 
-	$ curl -s http://yourapp.com
+	$ curl -s http://yourapp.yourformation.com
 	Powered by Deis
 	$ deis config:set POWERED_BY=Clojure
-	=== unbent-occupant
+	=== <appName>
 	POWERED_BY: Clojure
-	$ curl -s http://yourapp.com
+	$ curl -s http://yourapp.yourformation.com
 	Powered by Clojure
 
-This method is also how you connect your application to backing services like databases, queues and caches.
-
-To experiment in your application environment, use `deis run` to execute one-off commands against your application.
+`deis config:set` is also how you connect your application to backing services like databases, queues and caches. You can use `deis run` to execute one-off commands against your application for things like database administration, initial application setup and inspecting your container environment.
 
 	$ deis run ls -la
 	drwxr-xr-x  9 root root 4096 Oct 25 18:47 .
