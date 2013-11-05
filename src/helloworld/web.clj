@@ -3,7 +3,10 @@
 	    (:require [compojure.route :as route]
 	              [compojure.handler :as handler]))
 
-	(def message (System/getenv "POWERED_BY"))	
+		
+
+	; (def message (System/getenv "POWERED_BY"))
+	(def message (get (System/getenv) "POWERED_BY" "Deis"))
 
 	(defroutes main-routes
 	  ; what's going on

@@ -150,7 +150,7 @@ Deis applications are configured using environment variables. The example applic
 To view your application's log output, including any errors or stack traces, use `deis logs`.
 
 	$ deis logs
-	<show output>
+	Nov  4 23:09:00 ip-172-31-3-111 bolder-quotient[web.1]: Picked up JAVA_TOOL_OPTIONS:  -Djava.rmi.server.useCodebaseOnly=true
 
 ## Additional Resources
 
