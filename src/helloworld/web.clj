@@ -18,5 +18,6 @@
 	(def app
 	    (handler/api main-routes))
 	       
-	(defn -main [port]
+	(defn -main []
+            (def port (get (System/getenv) "PORT" 5000))
 	    (run-jetty app {:port (Integer. port)}))

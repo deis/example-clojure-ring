@@ -11,4 +11,4 @@
     [org.clojure/clojure-contrib "1.2.0"]
     ]
   :ring {:handler helloworld.web/handler}
-        )
+  :main "helloworld.web")
