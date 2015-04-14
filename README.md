@@ -62,6 +62,6 @@ This guide will walk you through deploying a Clojure application on Deis.
 ## Additional Resources
 
 * [Get Deis](http://deis.io/get-deis/)
-* [GitHub Project](https://github.com/opdemand/deis)
+* [GitHub Project](https://github.com/deis/deis)
 * [Documentation](http://docs.deis.io/)
 * [Blog](http://deis.io/blog/)

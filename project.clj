@@ -1,5 +1,5 @@
-(defproject opdemand-helloworld "1.0.0-SNAPSHOT"
-  :description "OpDemand Example Application"
+(defproject deis-helloworld "1.0.0-SNAPSHOT"
+  :description "Deis Example Application"
   :dependencies [
         [org.clojure/clojure "1.2.1"]
         [compojure "1.0.1"]
