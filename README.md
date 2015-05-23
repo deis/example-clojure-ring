@@ -4,60 +4,79 @@ This guide will walk you through deploying a Clojure application on Deis.
 
 ## Usage
 
-    $ deis create
-    Creating application... done, created uphill-crawfish
-    Git remote deis added
-    $ git push deis master
-    Counting objects: 107, done.
-    Delta compression using up to 8 threads.
-    Compressing objects: 100% (42/42), done.
-    Writing objects: 100% (107/107), 19.68 KiB | 0 bytes/s, done.
-    Total 107 (delta 38), reused 107 (delta 38)
-    -----> Clojure app detected
-    -----> Installing OpenJDK 1.6...done
-           Warning: no :min-lein-version found in project.clj; using 1.7.1.
-    -----> Installing Leiningen
-           Downloading: leiningen-1.7.1-standalone.jar
-           To use Leiningen 2.x, add this to project.clj: :min-lein-version "2.0.0"
-           Downloading: rlwrap-0.3.7
-           Writing: lein script
-    -----> Building with Leiningen
-           Running: lein deps
-           [...]
-           Copying 22 files to /tmp/build/lib
-    -----> Discovering process types
-           Procfile declares types -> web
-           Default process types for Clojure -> web
-    -----> Compiled slug size is 62M
-    -----> Building Docker image
-    Uploading context 64.06 MB
-    Uploading context
-    Step 0 : FROM deis/slugrunner
-     ---> 5567a808891d
-    Step 1 : RUN mkdir -p /app
-     ---> Using cache
-     ---> 928145890a08
-    Step 2 : ADD slug.tgz /app
-     ---> 5d8f5d76e813
-    Removing intermediate container 9a698dfde966
-    Step 3 : ENTRYPOINT ["/runner/init"]
-     ---> Running in f2d020bde4b6
-     ---> 32a163ee8b6a
-    Removing intermediate container f2d020bde4b6
-    Successfully built 32a163ee8b6a
-    -----> Pushing image to private registry
+```console
+$ git clone https://github.com/deis/example-clojure-ring
+$ cd example-clojure-ring
+$ deis create
+Creating application... done, created velvet-jerrycan
+Git remote deis added
+$ git push deis master
+Counting objects: 127, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (59/59), done.
+Writing objects: 100% (127/127), 22.80 KiB | 0 bytes/s, done.
+Total 127 (delta 48), reused 107 (delta 39)
+-----> Clojure (Leiningen 2) app detected
+-----> Installing OpenJDK 1.8...done
+-----> Installing Leiningen
+       Downloading: leiningen-2.5.1-standalone.jar
+       Writing: lein script
+-----> Building with Leiningen
+       Running: lein with-profile production compile :all
+       Retrieving org/clojure/clojure/1.6.0/clojure-1.6.0.pom from central
+...
+       Retrieving ring/ring-core/1.2.2/ring-core-1.2.2.jar from clojars
+       Retrieving ring/ring-servlet/1.2.2/ring-servlet-1.2.2.jar from clojars
+       Compiling helloworld.web
+-----> Discovering process types
+       Procfile declares types -> web
+       Default process types for Clojure (Leiningen 2) -> web
+-----> Compiled slug size is 68M
 
-           Launching... done, v2
+-----> Building Docker image
+remote: Sending build context to Docker daemon 70.35 MB
+remote: build context to Docker daemon
+Step 0 : FROM deis/slugrunner
+ ---> 4e3f871d77a2
+Step 1 : RUN mkdir -p /app
+ ---> Using cache
+ ---> 38b9675e88c6
+Step 2 : WORKDIR /app
+ ---> Using cache
+ ---> 4690a490e732
+Step 3 : ENTRYPOINT /runner/init
+ ---> Using cache
+ ---> f12d814fba64
+Step 4 : ADD slug.tgz /app
+ ---> 6ad55e9e503d
+Removing intermediate container d6b9d398e590
+Step 5 : ENV GIT_SHA 11017a293f756f9de3d5422df0b6ba1d1e66d59a
+ ---> Running in 35725edc5e58
+ ---> b909d8ef1139
+Removing intermediate container 35725edc5e58
+Successfully built b909d8ef1139
+-----> Pushing image to private registry
 
-    -----> uphill-crawfish deployed to Deis
-           http://uphill-crawfish.local.deisapp.com
+-----> Launching...
+       done, velvet-jerrycan:v2 deployed to Deis
 
-           To learn more, use `deis help` or visit http://deis.io
+       http://velvet-jerrycan.local3.deisapp.com
 
-    To ssh://git@local.deisapp.com:2222/uphill-crawfish.git
-     * [new branch]      master -> master
-    $ curl http://uphill-crawfish.local.deisapp.com
-    Powered by Deis
+       To learn more, use `deis help` or visit http://deis.io
+
+To ssh://git@deis.local3.deisapp.com:2222/velvet-jerrycan.git
+ * [new branch]      master -> master
+$ curl http://velvet-jerrycan.local3.deisapp.com
+Powered by Deis
+$ deis config:set POWERED_BY="Engine Yard"
+Creating config... done, v3
+
+=== velvet-jerrycan
+DEIS_APP: velvet-jerrycan
+POWERED_BY: Engine Yard
+$ curl http://velvet-jerrycan.local3.deisapp.com
+Powered by Engine Yard
+```
 
 ## Additional Resources
 
