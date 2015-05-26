@@ -1,14 +1,14 @@
-(defproject deis-helloworld "1.0.0-SNAPSHOT"
+(defproject deis-helloworld "1.0.1-SNAPSHOT"
   :description "Deis Example Application"
+  :url "https://github.com/deis/example-clojure-ring"
+  :license {:name "Apache v2.0"
+            :url "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [
-        [org.clojure/clojure "1.2.1"]
-        [compojure "1.0.1"]
-        [ring/ring-core "1.0.0"]
-        [ring/ring-jetty-adapter "1.0.0"]
-        [lein-ring "0.5.4"]
-        ]
-  :dev-dependencies [
-    [org.clojure/clojure-contrib "1.2.0"]
-    ]
-  :ring {:handler helloworld.web/handler}
-  :main "helloworld.web")
+    [org.clojure/clojure "1.6.0"]
+    [compojure "1.1.8"]
+    [ring/ring-jetty-adapter "1.2.2"]
+  ]
+  :min-lein-version "2.0.0"
+  :main ^:skip-aot helloworld.web
+  :target-path "target/%s"
+  :profiles {:uberjar {:aot :all}})
