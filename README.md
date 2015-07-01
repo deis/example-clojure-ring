@@ -23,15 +23,15 @@ Total 127 (delta 48), reused 107 (delta 39)
        Writing: lein script
 -----> Building with Leiningen
        Running: lein with-profile production compile :all
-       Retrieving org/clojure/clojure/1.6.0/clojure-1.6.0.pom from central
+       Retrieving org/clojure/clojure/1.7.0/clojure-1.7.0.pom from central
 ...
-       Retrieving ring/ring-core/1.2.2/ring-core-1.2.2.jar from clojars
-       Retrieving ring/ring-servlet/1.2.2/ring-servlet-1.2.2.jar from clojars
+       Retrieving clj-time/clj-time/0.6.0/clj-time-0.6.0.jar from clojars
+       Retrieving ring/ring-servlet/1.3.2/ring-servlet-1.3.2.jar from clojars
        Compiling helloworld.web
 -----> Discovering process types
        Procfile declares types -> web
        Default process types for Clojure (Leiningen 2) -> web
------> Compiled slug size is 68M
+-----> Compiled slug size is 73M
 
 -----> Building Docker image
 remote: Sending build context to Docker daemon 70.35 MB
