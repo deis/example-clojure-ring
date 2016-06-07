@@ -1,6 +1,6 @@
 # Clojure Quick Start Guide
 
-This guide will walk you through deploying a Clojure application on Deis Workflow.
+This guide will walk you through deploying a Clojure application on [Deis Workflow][].
 
 ## Usage
 
@@ -41,7 +41,7 @@ Done, haptic-duckling:v2 deployed to Deis
 
 Use 'deis open' to view this application in your browser
 
-To learn more, use 'deis help' or visit http://deis.io
+To learn more, use 'deis help' or visit https://deis.com/
 
 To ssh://git@deis-builder.deis.rocks:2222/haptic-duckling.git
  * [new branch]      master -> master
@@ -51,7 +51,8 @@ Powered by Deis
 
 ## Additional Resources
 
-* [Get Deis](http://deis.io/get-deis/)
-* [GitHub Project](https://github.com/deis/deis)
-* [Documentation](http://docs.deis.io/)
-* [Blog](http://deis.io/blog/)
+* [GitHub Project](https://github.com/deis/workflow)
+* [Documentation](https://deis.com/docs/workflow/)
+* [Blog](https://deis.com/blog/)
+
+[Deis Workflow]: https://github.com/deis/workflow#readme
